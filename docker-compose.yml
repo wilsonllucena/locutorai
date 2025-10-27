@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/locutorai
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: locutorai
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
