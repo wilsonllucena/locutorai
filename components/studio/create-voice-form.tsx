@@ -2,25 +2,18 @@
 
 import { useState, useTransition } from "react"
 import { type FieldErrors, type Resolver, useForm } from "react-hook-form"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { musicTracks } from "@/lib/music"
 import { voices } from "@/lib/voices"
+import { createProjectSchema, type CreateProjectInput } from "@/lib/validations"
 
-const formSchema = z.object({
-  title: z.string().min(3, "Informe um título"),
-  script: z.string().min(40, "Escreva pelo menos 40 caracteres"),
-  voiceId: z.string({ required_error: "Escolha uma voz" }),
-  musicId: z.string({ required_error: "Escolha uma trilha" })
-})
-
-type FormValues = z.infer<typeof formSchema>
+type FormValues = CreateProjectInput
 
 const resolver: Resolver<FormValues> = async values => {
-  const result = formSchema.safeParse(values)
+  const result = createProjectSchema.safeParse(values)
   if (result.success) {
     return { values: result.data, errors: {} }
   }
